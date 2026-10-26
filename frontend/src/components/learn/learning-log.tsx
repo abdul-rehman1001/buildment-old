@@ -14,6 +14,7 @@ import { AnswerTextareaWithMic } from "@/components/learn/answer-textarea-with-m
 import { inlineMarkdownToText, parseInlineMarkdown } from "@/lib/inline-markdown";
 import { cn } from "@/lib/utils";
 import { saveLearningLogAnswers } from "@/server/actions/learning-log";
+import { trackEngagement } from "@/lib/engagement/client";
 import {
   parseLearningLogQuestions,
   type LearningLogAnswers,
@@ -185,6 +186,7 @@ export function LearningLog({
     if (result.ok) {
       setSaveStatus("saved");
       setLastSavedAt(result.savedAt);
+      trackEngagement({ type: "notes_saved", chapterId });
     } else {
       setSaveStatus("error");
       pendingRef.current = { ...payload, ...pendingRef.current };

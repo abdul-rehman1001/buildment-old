@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { QuizSessionContext, type QuizBlockGrade } from "@/components/learn/quiz-session-context";
 import { QuizIntegrityPanel } from "@/components/learn/quiz-integrity-panel";
 import { useQuizIntegrity } from "@/lib/integrity/use-quiz-integrity";
+import { trackEngagement } from "@/lib/engagement/client";
 
 type QuizResultSummary = { score: number; maxScore: number; questions: number };
 
@@ -206,6 +207,7 @@ export function QuizChapterSessionClient({
 
       const summary = { score: body.score, maxScore: body.maxScore, questions: body.questions };
       setScoreSummary(summary);
+      trackEngagement({ type: "quiz_submitted", chapterId });
       setDirtyBlockIds(new Set());
 
       const gradesFromApi = Array.isArray(body.grades)
@@ -284,6 +286,7 @@ export function QuizChapterSessionClient({
         setSubmitError(result.error);
         return;
       }
+      trackEngagement({ type: "chapter_completed", chapterId });
       router.push(nextHref);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : "Could not open the next chapter.");
